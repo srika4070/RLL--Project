@@ -1,0 +1,153 @@
+DB SCHEMA
+
+
+
+DROP DATABASE IF EXISTS `receiptpro`;
+CREATE DATABASE IF NOT EXISTS `receiptpro` 
+USE `receiptpro`;
+
+
+-- Dumping structure for table receiptpro.recipe
+DROP TABLE IF EXISTS `recipe`;
+CREATE TABLE IF NOT EXISTS `recipe` (
+  `recipeid` bigint NOT NULL AUTO_INCREMENT,
+  `filextension` varchar(255) DEFAULT NULL,
+  `imagepath` varchar(255) DEFAULT NULL,
+  `ingredient` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `showrecipe` int DEFAULT NULL,
+  `steps` varchar(255) DEFAULT NULL,
+  `recipe_join_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`recipeid`),
+  KEY `FKjaj9t1tlymvc71ke1xhptkqyp` (`recipe_join_id`),
+  CONSTRAINT `FKjaj9t1tlymvc71ke1xhptkqyp` FOREIGN KEY (`recipe_join_id`) REFERENCES `recipecat` (`catname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DELETE FROM `recipe`;
+
+
+DROP TABLE IF EXISTS `recipecat`;
+CREATE TABLE IF NOT EXISTS `recipecat` (
+  `catname` varchar(255) NOT NULL,
+  PRIMARY KEY (`catname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DELETE FROM `recipecat`;
+
+INSERT INTO `recipecat` (`catname`) VALUES
+	('CHINESE'),
+	('NONVEG'),
+	('VEG');
+
+
+
+
+DROP TABLE IF EXISTS `recipecomments`;
+CREATE TABLE IF NOT EXISTS `recipecomments` (
+  `recipecommentid` bigint NOT NULL AUTO_INCREMENT,
+  `comments` varchar(255) DEFAULT NULL,
+  `recipe_join_id` bigint NOT NULL,
+  `user_join_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`recipecommentid`),
+  KEY `FKcc8kgpo6a10ugr8v28cj05vm9` (`user_join_id`),
+  KEY `FKhaprk8wq0aqfccgcbndb9874t` (`recipe_join_id`),
+  CONSTRAINT `FKcc8kgpo6a10ugr8v28cj05vm9` FOREIGN KEY (`user_join_id`) REFERENCES `users` (`username`),
+  CONSTRAINT `FKhaprk8wq0aqfccgcbndb9874t` FOREIGN KEY (`recipe_join_id`) REFERENCES `recipe` (`recipeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DELETE FROM `recipecomments`;
+
+
+
+
+DROP TABLE IF EXISTS `recipelike`;
+CREATE TABLE IF NOT EXISTS `recipelike` (
+  `receiptlikeid` bigint NOT NULL AUTO_INCREMENT,
+  `likerecipe` int DEFAULT NULL,
+  `recipe_join_id` bigint NOT NULL,
+  PRIMARY KEY (`receiptlikeid`),
+  KEY `FKl7uekdeapv5ta4g95qabf359o` (`recipe_join_id`),
+  CONSTRAINT `FKl7uekdeapv5ta4g95qabf359o` FOREIGN KEY (`recipe_join_id`) REFERENCES `recipe` (`recipeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DELETE FROM `recipelike`;
+
+
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `username` varchar(255) NOT NULL,
+  `authinfo` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `logintype` int DEFAULT NULL,
+  `phonenumber` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+DELETE FROM `users`;
+
+INSERT INTO `users` (`username`, `authinfo`, `email`, `firstname`, `lastname`, `logintype`, `phonenumber`) VALUES
+	('admin', 'admin124', 'admin@gmail.com', 'admin', 'last', 1, '7234567890'),
+	('recepeuser1', 'recepass2', 'test@gmail.com', 'receiptfirstnamenew', 'receiptlastnamenew', 2, '8090990909');
+
+
+
+mysql>  use receiptpro;
+Database changed
+mysql> show tables;
++----------------------+
+| Tables_in_receiptpro |
++----------------------+
+| recipe               |
+| recipecat            |
+| recipecomments       |
+| recipelike           |
+| users                |
++----------------------+
+5 rows in set (0.07 sec)
+
+mysql> select * from recipe;
++----------+--------------+-------------------------+----------------------------------------+-----------------+------------+-------------------------------------------------------------------------------+----------------+
+| recipeid | filextension | imagepath               | ingredient                             | name            | showrecipe | steps                                                                         | recipe_join_id |
++----------+--------------+-------------------------+----------------------------------------+-----------------+------------+-------------------------------------------------------------------------------+----------------+
+|        2 | jpg          | biryaani.jpg            | chicken and rice                       | CHICKEN BIRYANI |          1 | chicken and rice                                                              | NONVEG         |
+|        3 | jpg          | manchurian.jpg          | cabbage, Corn Flour, salt              | MANCHURIAN      |          1 | mix cabbage, water and corn flour                                             | CHINESE        |
+|        4 | jpeg         | fruit-salad-square.jpeg | Banana Apple  Honey  Fresh mint leaves | FRUIT SALAD     |          1 | Peel and chop fruits into bite-sized pieces. Remove stems and seeds as needed | VEG            |
++----------+--------------+-------------------------+----------------------------------------+-----------------+------------+-------------------------------------------------------------------------------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> select * from recipecat;
++---------+
+| catname |
++---------+
+| CHINESE |
+| NONVEG  |
+| VEG     |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from recipecomments;
++-----------------+------------------+----------------+--------------+
+| recipecommentid | comments         | recipe_join_id | user_join_id |
++-----------------+------------------+----------------+--------------+
+|               1 | You dish is good |              2 | arun123      |
+|               2 | the food is good |              2 | arun123      |
+|               3 | the food is good |              2 | arun123      |
++-----------------+------------------+----------------+--------------+
+3 rows in set (0.01 sec)
+
+mysql> select * from recipelike;
++---------------+------------+----------------+
+| receiptlikeid | likerecipe | recipe_join_id |
++---------------+------------+----------------+
+|             1 |          6 |              2 |
++---------------+------------+----------------+
+1 row in set (0.01 sec)
+
+mysql>
